@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mariadb.jdbc.MariaDbDataSource;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +35,12 @@ class ActorsRepositoryTest {
 
     @Test
     void testInsert() {
-        actorsRepository.saveActor("John Doe");
+        long id = actorsRepository.saveActor("John Doe");
+        Optional<Actor> result = actorsRepository.findActorByName("John Doe");
+
+        assertEquals(id, result.get().getId());
+
+
     }
 
 }

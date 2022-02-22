@@ -5,6 +5,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+//language=sql
 
 public class MoviesRepository {
 
@@ -14,18 +15,30 @@ public class MoviesRepository {
         this.dataSource = dataSource;
     }
 
-    public void saveMovie(String title, LocalDate releaseDate) {
+    public long saveMovie(String title, LocalDate releaseDate) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement stmt =
-                     connection.prepareStatement("insert into movies(title, release_date) values (?,?)")) {
+                     connection.prepareStatement("insert into movies(title, release_date) values (?,?)",
+                             Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, title);
             stmt.setDate(2, Date.valueOf(releaseDate));
             stmt.executeUpdate();
 
+            return getIdByStatement(stmt);
         } catch (SQLException sqle) {
             throw new IllegalStateException("Cannot connect", sqle);
         }
     }
+
+    private long getIdByStatement(Statement stmt) throws SQLException {
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+            throw new IllegalStateException("Cannot insert to movies");
+        }
+    }
+
 
     public List<Movie> findAllMovies() {
         try (Connection conn = dataSource.getConnection();
