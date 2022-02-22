@@ -25,23 +25,24 @@ public class Main {
         }
 
         Flyway flyway = Flyway.configure().dataSource(dataSource).load();
-//        flyway.clean();
+        flyway.clean();
         flyway.migrate();
 
         ActorsRepository actorsRepository = new ActorsRepository(dataSource);
         MoviesRepository moviesRepository = new MoviesRepository(dataSource);
-
-//        moviesRepository.saveMovie("Titanic", LocalDate.of(1997, 12, 11));
-//        moviesRepository.saveMovie("T2", LocalDate.of(1990, 12, 11));
-//        System.out.println(moviesRepository.findAllMovies());
-
         ActorsMoviesRepository actorsMoviesRepository = new ActorsMoviesRepository(dataSource);
+        RatingsRepository ratingsRepository = new RatingsRepository(dataSource);
+
         ActorsMoviesService service = new ActorsMoviesService(actorsRepository, moviesRepository, actorsMoviesRepository);
+        MovieRatingsService movieRatingsService = new MovieRatingsService(moviesRepository, ratingsRepository);
 
         service.insertMoviesWithActors
                 ("Titanic", LocalDate.of(1997, 11, 13), List.of("Leonardo DiCaprio", "Kate Winslet"));
 
         service.insertMoviesWithActors
                 ("Great Gatsby", LocalDate.of(2012, 12, 11), List.of("Leonardo diCaprio", "Toby"));
+
+        movieRatingsService.addRatings("Titanic", 5, 3, 2);
+        movieRatingsService.addRatings("Great Gatsby", 1, 3, 2, 5);
     }
 }
