@@ -24,7 +24,7 @@ public class Main {
             throw new IllegalStateException("Cannot reach database", se);
         }
 
-        Flyway flyway = Flyway.configure().dataSource(dataSource).load();
+        Flyway flyway = Flyway.configure().locations("db/migration/movies").dataSource(dataSource).load();
         flyway.clean();
         flyway.migrate();
 
