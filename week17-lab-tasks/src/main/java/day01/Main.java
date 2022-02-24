@@ -44,5 +44,8 @@ public class Main {
 
         movieRatingsService.addRatings("Titanic", 5, 3, 2);
         movieRatingsService.addRatings("Great Gatsby", 1, 3, 2, 5);
+
+        movieRatingsService.addRatings("Titanic", 2);
+
     }
 }
